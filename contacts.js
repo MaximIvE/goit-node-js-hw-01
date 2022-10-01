@@ -8,17 +8,16 @@ async function listContacts() {
       const data = await fs.readFile(contactsPath, "utf-8");
       return JSON.parse(data);
     }catch(error){
-      console.log(error.message); 
+      console.log('\x1b[33m%s\x1b[0m', error.message);
       return null;
     }
   };
 
-  async function getContactById(contactId) {
-    const id = contactId.toString();
+  async function getContactById(id) {
     const result = await listContacts();
     if(!result) return null;
-    const contact = result.find(item => item.id === id);
-    if(!contact) console.log("Contact not found");
+    const contact = result.find(item => item.id == id);
+    if(!contact) console.warn("\x1B[31m Contact not found");
     return contact || null;
   };
   
@@ -36,12 +35,9 @@ async function listContacts() {
     return removedContact;
   };
   
-  
-  async function addContact({name="", email="", phone=""}) {
-    
-
+  async function addContact(name, email, phone) {
     const result = await listContacts();
-    if(!result) console.log("Failed to read previous contacts. Contacts will be overwritten.");
+    if(!result) console.warn("\x1b[33m%s\x1b[0m Failed to read previous contacts. Contacts will be overwritten.");
     const id = (Number(result[result.length - 1].id) + 1).toString() || 1;
     const data = {id, name, email, phone};
     const newContacts = result ? [...result, data] : [data];

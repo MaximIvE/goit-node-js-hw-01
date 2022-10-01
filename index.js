@@ -1,40 +1,31 @@
 const {listContacts, getContactById, removeContact, addContact} = require('./contacts.js');
+const argv = require("yargs").argv;
 
-const fileOperations = async({action, contactId, data}) => {
+const invokeAction = async({action, id, name="", email="", phone=""}) => {
     switch(action) {
-        case "getAll":   
+        case "list":   
             const allContacts = await listContacts();
-            console.log(allContacts);
+            console.table(allContacts);
             break;
 
-        case "getById":   
-            const oneContact = await getContactById(contactId);
+        case "get":   
+            const oneContact = await getContactById(id);
             console.log(oneContact);
             break;
 
-        case "removeById":   
-            const removedContact = await removeContact(contactId);
+        case "remove":   
+            const removedContact = await removeContact(id);
             console.log(removedContact);
             break;
 
         case "add":     
-            const result = await addContact(data);  
+            const result = await addContact(name, email, phone);  
             console.log(result);
             break;
 
             
-        default: console.log("Unkown action");
+        default: console.warn("\x1B[31m Unknown action type!");
     }
 };
 
-// fileOperations({action: "getAll"});
-// fileOperations({action: "getById", contactId: 11});
-fileOperations({action: "removeById", contactId: 11});
-
-// fileOperations({action: "add",
-// data: {
-//         name: 'Alec Howard',
-//         email: 'Donec.elementum@scelerisquescelerieler',
-//         phone: '(748) 206-2688'
-// }
-// });
+invokeAction(argv);
